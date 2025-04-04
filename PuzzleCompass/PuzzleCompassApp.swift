@@ -9,12 +9,13 @@ import SwiftUI
 
 @main
 struct PuzzleCompassApp: App {
-    @StateObject private var puzzleService = PuzzleService()
+    // Application state
+    @StateObject private var appState = AppState()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(puzzleService)
+                .environmentObject(appState)
         }
     }
 }

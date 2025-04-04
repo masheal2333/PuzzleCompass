@@ -1,6 +1,6 @@
 import SwiftUI
 
-// 帮助说明视图
+// Help guide view
 struct HelpView: View {
     @Environment(\.presentationMode) var presentationMode
     
@@ -8,7 +8,7 @@ struct HelpView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("如何使用拼图定位功能")
+                    Text("How to Use Puzzle Compass")
                         .font(.title)
                         .fontWeight(.bold)
                     
@@ -25,7 +25,7 @@ struct HelpView: View {
                 trailing: Button(action: {
                     presentationMode.wrappedValue.dismiss()
                 }) {
-                    Text("完成")
+                    Text("Done")
                         .fontWeight(.semibold)
                 }
             )
@@ -33,56 +33,56 @@ struct HelpView: View {
         }
     }
     
-    // MARK: - 子视图组件
+    // MARK: - Subview Components
     
     private var featuresSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top) {
                 Text("•")
-                Text("彩色框表示碎片在完整拼图中的位置")
+                Text("Colored frames indicate piece locations in the complete puzzle")
             }
             
             HStack(alignment: .top) {
                 Text("•")
-                Text("点击底部的碎片可以高亮显示对应的匹配位置")
+                Text("Tap a piece thumbnail to highlight its matching location")
             }
             
             HStack(alignment: .top) {
                 Text("•")
-                Text("双指捏合可以放大或缩小拼图视图")
+                Text("Pinch to zoom in or out of the puzzle view")
             }
             
             HStack(alignment: .top) {
                 Text("•")
-                Text("单指拖动可以移动拼图视图")
+                Text("Drag to move around the puzzle view")
             }
             
             HStack(alignment: .top) {
                 Text("•")
-                Text("点击\"重置\"按钮可以恢复原始视图")
+                Text("Tap \"Reset\" button to restore the original view")
             }
         }
     }
     
     private var tipsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("提示")
+            Text("Tips")
                 .font(.title2)
                 .fontWeight(.bold)
             
             HStack(alignment: .top) {
                 Text("•")
-                Text("拼图照片越清晰，识别结果越准确")
+                Text("Clearer puzzle photos lead to more accurate recognition")
             }
             
             HStack(alignment: .top) {
                 Text("•")
-                Text("光线充足的环境下拍摄效果最佳")
+                Text("Well-lit environments produce the best results")
             }
             
             HStack(alignment: .top) {
                 Text("•")
-                Text("避免拍摄时产生阴影或反光")
+                Text("Avoid shadows and reflections when taking photos")
             }
         }
     }

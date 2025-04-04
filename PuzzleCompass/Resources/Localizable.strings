@@ -1,0 +1,43 @@
+/* App Common */
+"app.name" = "Puzzle Compass";
+"loading" = "Loading...";
+
+/* Main Screen */
+"main.button.capturePuzzle" = "Capture Complete Puzzle";
+"main.button.selectFromAlbum" = "Select from Album";
+"main.button.capturePuzzle.description" = "Capture puzzle and pieces for matching";
+"main.button.selectFromAlbum.description" = "Select puzzle and pieces from album";
+"mainCapturePuzzle" = "Capture Complete Puzzle";
+"mainCapturePuzzleDescription" = "Take a photo of the assembled puzzle or box image";
+
+/* Navigation */
+"navigation.back" = "Back";
+"navigation.done" = "Done";
+"navigation.cancel" = "Cancel";
+"navigation.confirm" = "Confirm";
+
+/* Camera Screen */
+"camera.title.capturePuzzle" = "Capture Puzzle";
+"camera.title.capturePieces" = "Capture Pieces";
+"camera.guidance.nowCapturePieces" = "Now Capture Pieces";
+"camera.guidance.placeInCenter" = "Place pieces in center with good lighting";
+"camera.guidance.positionPuzzle" = "Position the puzzle within the frame";
+"camera.button.retake" = "Retake";
+"camera.button.confirm" = "Confirm";
+"camera.title.confirmPhoto" = "Confirm Photo";
+
+/* Photo Picker */
+"photoPicker.title.selectPuzzle" = "Select Puzzle";
+"photoPicker.title.selectPieces" = "Select Pieces";
+"photoPicker.prompt.selectPuzzle" = "Please select a complete puzzle photo";
+"photoPicker.prompt.selectPieces" = "Please select one or more puzzle pieces";
+
+/* Result Screen */
+"result.title" = "Puzzle Result";
+"result.button.captureMorePieces" = "Capture More Pieces";
+
+/* Error Messages */
+"error.puzzleRecognitionFailed" = "Puzzle recognition failed, please try again";
+"error.pieceMatchingFailed" = "Piece matching failed, please try again";
+"error.tryAgain" = "Please try again";
+"error.selectAnotherImage" = "Please select another image"; 

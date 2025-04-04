@@ -8,30 +8,30 @@ struct PhotoPicker: View {
     @State private var isSelectionComplete = false
     @State private var showProcessing = false
     
-    // 数据管理服务
+    // Data management service
     @EnvironmentObject var puzzleService: PuzzleService
     
     var body: some View {
         VStack(spacing: 20) {
-            // 标题
-            Text("选择照片")
+            // Title
+            Text(L10n.selectPhotos)
                 .font(.headline)
                 .padding(.top)
             
-            // 提示文字
-            Text("请选择完整拼图和拼图碎片的照片\n第一张被视为完整拼图，其余为碎片")
+            // Prompt text
+            Text(L10n.selectPuzzlePrompt)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
             
-            // 选择器
+            // Picker
             PhotosPicker(
                 selection: $selectedItems,
                 matching: .images,
                 photoLibrary: .shared()
             ) {
-                Label("从相册中选择照片", systemImage: "photo.on.rectangle")
+                Label(L10n.selectPhotos, systemImage: "photo.on.rectangle")
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(Color.blue.opacity(0.1))
@@ -44,7 +44,7 @@ struct PhotoPicker: View {
             }
             .padding(.horizontal)
             
-            // 已选照片预览
+            // Selected photos preview
             if !selectedImages.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
@@ -60,8 +60,8 @@ struct PhotoPicker: View {
                                             .stroke(Color.gray.opacity(0.3), lineWidth: 1)
                                     )
                                 
-                                // 显示标签，区分完整拼图和碎片
-                                Text(index == 0 ? "完整拼图" : "碎片\(index)")
+                                // Display label, distinguish complete puzzle and pieces
+                                Text(index == 0 ? L10n.selectPuzzle : "\(L10n.selectPieces) \(index)")
                                     .font(.caption2)
                                     .foregroundColor(index == 0 ? .blue : .secondary)
                             }
@@ -70,30 +70,30 @@ struct PhotoPicker: View {
                     .padding(.horizontal)
                 }
                 
-                // 确认按钮
+                // Confirm button
                 Button(action: {
                     showProcessing = true
                     
-                    // 处理照片 - 符合"自动识别并分析"的动线
+                    // Process photos - follows the "automatic recognition and analysis" flow
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         if selectedImages.count >= 2 {
-                            // 第一张是完整拼图，其余是碎片
+                            // First image is complete puzzle, rest are pieces
                             let completePuzzle = selectedImages[0]
                             let pieces = Array(selectedImages.dropFirst())
                             
-                            // 设置完整拼图和碎片
+                            // Set complete puzzle and pieces
                             puzzleService.setCompletePuzzle(completePuzzle)
                             puzzleService.setPuzzlePieces(pieces)
                             
-                            // 分析所有碎片
-                            puzzleService.analyzeAllPieces()
+                            // Analyze all pieces
+                            _ = puzzleService.analyzeAllPieces()
                             
                             isSelectionComplete = true
                         } else if selectedImages.count == 1 {
-                            // 只有一张图片时，视为完整拼图
+                            // If only one image, treat as complete puzzle
                             puzzleService.setCompletePuzzle(selectedImages[0])
                             
-                            // 发送拍摄碎片通知，符合设计动线
+                            // Send capture piece notification, following design flow
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 NotificationCenter.default.post(name: NSNotification.Name("CaptureMode.pieceCapture"), object: nil)
                                 isSelectionComplete = true
@@ -103,7 +103,7 @@ struct PhotoPicker: View {
                         showProcessing = false
                     }
                 }) {
-                    Text("确认并分析")
+                    Text(L10n.confirm)
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -118,11 +118,11 @@ struct PhotoPicker: View {
             
             Spacer()
             
-            // 取消按钮
+            // Cancel button
             Button(action: {
                 presentationMode.wrappedValue.dismiss()
             }) {
-                Text("取消")
+                Text(L10n.cancel)
                     .foregroundColor(.secondary)
             }
             .padding(.bottom)
@@ -149,7 +149,7 @@ struct PhotoPicker: View {
                                     .progressViewStyle(CircularProgressViewStyle(tint: .white))
                                     .scaleEffect(1.5)
                                 
-                                Text("正在分析图片...")
+                                Text(L10n.analyzing)
                                     .foregroundColor(.white)
                                     .padding(.top, 20)
                             }
@@ -167,7 +167,47 @@ struct PhotoPicker: View {
 
 struct PhotoPicker_Previews: PreviewProvider {
     static var previews: some View {
-        PhotoPicker()
-            .environmentObject(PuzzleService())
+        // Create an environment object for preview
+        let mockService = PuzzleService()
+        
+        return VStack {
+            Text(L10n.selectPhotos)
+                .font(.headline)
+                .padding()
+            
+            ScrollView {
+                LazyVGrid(columns: [
+                    GridItem(.flexible()),
+                    GridItem(.flexible()),
+                    GridItem(.flexible())
+                ], spacing: 10) {
+                    ForEach(0..<9, id: \.self) { _ in
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.3))
+                            .aspectRatio(1, contentMode: .fit)
+                            .overlay(
+                                Image(systemName: "photo")
+                                    .font(.largeTitle)
+                                    .foregroundColor(.gray)
+                            )
+                    }
+                }
+                .padding()
+            }
+            
+            Spacer()
+            
+            Button(action: {}) {
+                Text(L10n.confirm)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+                    .padding()
+            }
+        }
+        .environmentObject(mockService)
+        .previewDisplayName(L10n.selectPhotos)
     }
 } 

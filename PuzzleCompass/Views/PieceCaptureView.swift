@@ -164,18 +164,18 @@ struct PieceCaptureView: View {
             // 开始定位按钮 - 符合"自动分析并显示结果界面"
             Button(action: {
                 if !puzzleService.puzzlePieceImages.isEmpty {
-                    // 分析拼图碎片
-                    puzzleService.analyzeAllPieces()
-                    
-                    // 直接关闭当前视图，结果会自动显示
+                    // 完成拍摄，分析结果
+                    _ = puzzleService.analyzeAllPieces()
+
+                    // 更新导航状态
                     navigateToResults = false
                     presentationMode.wrappedValue.dismiss()
                 } else if !puzzlePieces.isEmpty {
                     // 设置碎片图像到服务
                     puzzleService.setPuzzlePieces(puzzlePieces)
                     
-                    // 分析拼图碎片
-                    puzzleService.analyzeAllPieces()
+                    // 完成拍摄，分析结果
+                    _ = puzzleService.analyzeAllPieces()
                     
                     // 关闭当前视图，结果会自动显示
                     presentationMode.wrappedValue.dismiss()

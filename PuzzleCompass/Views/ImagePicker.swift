@@ -1,7 +1,7 @@
 import SwiftUI
 import AVFoundation
 
-// 图片选择器 - UIViewControllerRepresentable
+// Image Picker - UIViewControllerRepresentable
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var selectedImage: UIImage?
     var sourceType: UIImagePickerController.SourceType
@@ -14,23 +14,23 @@ struct ImagePicker: UIViewControllerRepresentable {
         let picker = UIImagePickerController()
         picker.delegate = context.coordinator
         
-        // 检查相机权限和可用性
+        // Check camera permissions and availability
         if sourceType == .camera {
-            // 首先检查设备是否有相机
+            // First check if the device has a camera
             if !UIImagePickerController.isSourceTypeAvailable(.camera) {
-                // 设备没有相机，切换到照片库
-                print("设备不支持相机，切换到照片库")
+                // Device doesn't have a camera, switch to photo library
+                print("Device doesn't support camera, switching to photo library")
                 picker.sourceType = .photoLibrary
                 return picker
             }
             
-            // 检查相机权限
+            // Check camera permissions
             let authStatus = AVCaptureDevice.authorizationStatus(for: .video)
             if authStatus == .denied || authStatus == .restricted {
-                alertTitle = "相机访问受限"
-                alertMessage = "请前往设置允许PuzzleCompass访问您的相机"
+                alertTitle = "Camera Access Restricted"
+                alertMessage = "Please go to Settings and allow PuzzleCompass to access your camera"
                 showAlert = true
-                // 由于无法访问相机，改为使用照片库
+                // Since camera can't be accessed, use photo library instead
                 picker.sourceType = .photoLibrary
             } else {
                 picker.sourceType = sourceType
@@ -57,17 +57,15 @@ struct ImagePicker: UIViewControllerRepresentable {
         }
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-            // 添加错误处理
-            do {
-                if let editedImage = info[.editedImage] as? UIImage {
-                    parent.selectedImage = editedImage
-                } else if let originalImage = info[.originalImage] as? UIImage {
-                    parent.selectedImage = originalImage
-                }
-            } catch {
-                print("处理照片时出错: \(error.localizedDescription)")
+            // Process photo selection
+            if let editedImage = info[.editedImage] as? UIImage {
+                parent.selectedImage = editedImage
+            } else if let imageData = info[.originalImage] as? UIImage {
+                parent.selectedImage = imageData
             }
-            parent.presentationMode.wrappedValue.dismiss()
+            
+            // Close the picker
+            picker.dismiss(animated: true)
         }
         
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {

@@ -1,3 +1,4 @@
+import Foundation
 import SwiftUI
 import Combine
 
@@ -20,17 +21,25 @@ struct PuzzleAnalysis: Identifiable {
     }
 }
 
+// 简化版PuzzleService用于预览
 class PuzzleService: ObservableObject {
+    // 完整拼图图像
     @Published var completePuzzleImage: UIImage?
+    
+    // 拼图碎片图像
     @Published var puzzlePieceImages: [UIImage] = []
+    
+    // 分析结果
     @Published var analysisResults: [PieceAnalysisResult] = []
-    @Published var recentAnalyses: [PuzzleAnalysis] = []
+    
+    // 初始化
+    init() {
+        print("初始化PuzzleService")
+    }
     
     // 设置完整拼图
     func setCompletePuzzle(_ image: UIImage) {
-        // 自动扣取完整拼图逻辑
-        let processedImage = processCompletePuzzle(image)
-        self.completePuzzleImage = processedImage
+        self.completePuzzleImage = image
     }
     
     // 设置拼图碎片
@@ -38,132 +47,49 @@ class PuzzleService: ObservableObject {
         self.puzzlePieceImages = images
     }
     
-    // 添加单个拼图碎片
+    // 添加拼图碎片
     func addPuzzlePiece(_ image: UIImage) {
         self.puzzlePieceImages.append(image)
-        
-        // 如果已有完整拼图，则自动分析新添加的碎片
-        if let _ = completePuzzleImage {
-            // 先清除之前的分析结果，然后分析所有碎片，确保结果页面能正确显示
-            analysisResults = []
-            for pieceImage in puzzlePieceImages {
-                let result = analyzePosition(for: pieceImage)
-                analysisResults.append(result)
-            }
-            
-            // 保存本次分析到最近记录
-            saveAnalysisToHistory()
-        }
     }
     
-    // 分析拼图碎片位置
+    // 分析所有拼图碎片位置
     func analyzeAllPieces() -> [PieceAnalysisResult] {
-        guard let completePuzzle = completePuzzleImage, !puzzlePieceImages.isEmpty else {
+        guard let _ = completePuzzleImage, !puzzlePieceImages.isEmpty else {
             return []
         }
         
-        // 清空之前的分析结果
-        analysisResults = []
+        var analysisResults: [PieceAnalysisResult] = []
         
         // 分析每个碎片
-        for (index, pieceImage) in puzzlePieceImages.enumerated() {
+        for (_, pieceImage) in puzzlePieceImages.enumerated() {
             let result = analyzePosition(for: pieceImage)
             analysisResults.append(result)
         }
         
-        // 保存本次分析到最近记录
-        saveAnalysisToHistory()
+        // 更新发布的结果
+        self.analysisResults = analysisResults
         
         return analysisResults
     }
     
-    // 保存分析记录
-    private func saveAnalysisToHistory() {
-        guard let completePuzzle = completePuzzleImage, !puzzlePieceImages.isEmpty else {
-            return
-        }
-        
-        let newAnalysis = PuzzleAnalysis(
-            completePuzzleImage: completePuzzle,
-            pieceImages: puzzlePieceImages,
-            date: Date()
-        )
-        
-        // 添加到最近记录
-        recentAnalyses.insert(newAnalysis, at: 0)
-        
-        // 限制保存的数量
-        if recentAnalyses.count > 10 {
-            recentAnalyses = Array(recentAnalyses.prefix(10))
-        }
-    }
-    
-    // 处理完整拼图（自动扣取）
-    private func processCompletePuzzle(_ image: UIImage) -> UIImage {
-        // 在实际应用中，这里应该实现拼图边缘检测和自动扣取
-        // 这里简单返回原图，真实应用中需要替换为图像处理逻辑
-        return image
-    }
-    
-    // 分析碎片位置（示例逻辑）
+    // 分析单个碎片的位置
     private func analyzePosition(for pieceImage: UIImage) -> PieceAnalysisResult {
-        // 在实际应用中，这里应该实现图像识别和位置匹配算法
-        // 以下仅为示例数据
-        
-        // 随机生成位置（实际应用中应该是真实的匹配算法）
-        let randomX = CGFloat.random(in: 0.1...0.9)
-        let randomY = CGFloat.random(in: 0.1...0.9)
-        let randomWidth = CGFloat.random(in: 0.05...0.2)
-        let randomHeight = CGFloat.random(in: 0.05...0.2)
-        
-        let relativePosition = CGRect(
-            x: randomX,
-            y: randomY,
-            width: randomWidth,
-            height: randomHeight
-        )
-        
-        // 置信度（实际应用中应该是真实的匹配准确度）
-        let confidence = Double.random(in: 0.7...0.99)
-        
+        // 在实际应用中,这里会有复杂的图像处理逻辑
+        // 简化版本仅返回一个模拟结果
         return PieceAnalysisResult(
             pieceImage: pieceImage,
-            relativePosition: relativePosition,
-            confidence: confidence
+            position: CGPoint(x: 100, y: 100),
+            rotation: 0.0,
+            confidence: 0.9
         )
     }
 }
 
-// 碎片分析结果
-struct PieceAnalysisResult: Identifiable, Equatable {
+// 拼图碎片分析结果
+struct PieceAnalysisResult: Identifiable {
     let id = UUID()
     let pieceImage: UIImage
-    
-    // 在完整拼图中的相对位置（范围0-1）
-    let relativePosition: CGRect
-    
-    // 匹配置信度（0-1）
+    let position: CGPoint
+    let rotation: CGFloat
     let confidence: Double
-    
-    // 匹配置信度的可读性表示
-    var confidenceString: String {
-        let percentage = Int(confidence * 100)
-        return "\(percentage)%"
-    }
-    
-    // 颜色表示置信度
-    var confidenceColor: Color {
-        if confidence >= 0.9 {
-            return .green
-        } else if confidence >= 0.7 {
-            return .yellow
-        } else {
-            return .orange
-        }
-    }
-    
-    // Equatable实现
-    static func == (lhs: PieceAnalysisResult, rhs: PieceAnalysisResult) -> Bool {
-        return lhs.id == rhs.id
-    }
 } 

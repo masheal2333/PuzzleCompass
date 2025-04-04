@@ -205,8 +205,7 @@ struct FullPuzzleView: View {
     
     // 提供拼图碎片页面
     var pieceCapturePage: some View {
-        // 使用假图片数据以便演示
-        let dummyImage = fullPuzzleImage ?? UIImage(systemName: "photo")!
+        // 直接返回PieceCaptureView，不需要dummyImage
         return PieceCaptureView()
     }
 } 
